@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooked 🍳</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* justify-content: center;  <-- REMOVE THIS */
+            min-height: 100vh; /* <-- CHANGE height TO min-height */
+            margin: 0;
+            text-align: center;
+            padding-top: 50px; /* <-- ADD THIS to give some breathing room at the top */
+            padding-bottom: 50px; /* <-- ADD THIS so you can scroll to the bottom */
+        }
+        h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background-color: #1DB954; /* Spotify Green */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+        #roast-container {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #333;
+            max-width: 600px;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Keeps format */
+            display: none; /* Hidden until roast arrives */
+        }
+    </style>
+</head>
+<body>
+    <h1>COOKED 🍳</h1>
+    <p>Let AI judge your terrible music taste.</p>
+    
+    <button id="roast-btn">Roast My History</button>
+
+    <div id="roast-container"></div>
+
+    <script>
+        const btn = document.getElementById('roast-btn');
+        const container = document.getElementById('roast-container');
+
+        btn.addEventListener('click', async () => {
+            container.style.display = 'block';
+            container.innerText = "🔥 Cooking...";
+            
+            // 1. Ask the server for the roast
+            const response = await fetch('/roast');
+            
+            // 2. Get the text
+            const text = await response.text();
+            
+            // 3. Show it
+            container.innerText = text;
+        });
+    </script>
+</body>
+</html>
