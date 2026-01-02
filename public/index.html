@@ -12,19 +12,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* justify-content: center;  <-- REMOVE THIS */
-            min-height: 100vh; /* <-- CHANGE height TO min-height */
+            
+            min-height: 100vh;
             margin: 0;
             text-align: center;
-            padding-top: 50px; /* <-- ADD THIS to give some breathing room at the top */
-            padding-bottom: 50px; /* <-- ADD THIS so you can scroll to the bottom */
+            padding-top: 50px;
+            padding-bottom: 50px;
         }
         h1 { font-size: 3rem; margin-bottom: 0.5rem; }
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
             cursor: pointer;
-            background-color: #1DB954; /* Spotify Green */
+            background-color: #1DB954;
             color: white;
             border: none;
             border-radius: 50px;
@@ -38,34 +38,43 @@
             border: 1px solid #333;
             max-width: 600px;
             line-height: 1.6;
-            white-space: pre-wrap; /* Keeps format */
-            display: none; /* Hidden until roast arrives */
+            white-space: pre-wrap;
+            display: none;
         }
     </style>
 </head>
 <body>
     <h1>COOKED 🍳</h1>
-    <p>Let AI judge your terrible music taste.</p>
+    <p>Enter your favorite artists (comma separated):</p>
     
-    <button id="roast-btn">Roast My History</button>
+    <input type="text" id="artist-input" placeholder="e.g. Taylor Swift, Drake, BTS" 
+           style="padding: 10px; font-size: 1rem; width: 300px; margin-bottom: 20px; border-radius: 5px; border: none;">
+    
+    <button id="roast-btn">Roast My Taste</button>
 
     <div id="roast-container"></div>
 
     <script>
         const btn = document.getElementById('roast-btn');
+        const input = document.getElementById('artist-input'); // <--- Grab the input
         const container = document.getElementById('roast-container');
 
         btn.addEventListener('click', async () => {
+            const artists = input.value;
+            if (!artists) return alert("Please enter an artist!");
+
             container.style.display = 'block';
             container.innerText = "🔥 Cooking...";
             
-            // 1. Ask the server for the roast
-            const response = await fetch('/roast');
+            // --- NEW: POST REQUEST ---
+            // We are sending data TO the server now
+            const response = await fetch('/roast', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ artists: artists }) 
+            });
             
-            // 2. Get the text
             const text = await response.text();
-            
-            // 3. Show it
             container.innerText = text;
         });
     </script>
