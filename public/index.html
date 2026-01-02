@@ -56,26 +56,41 @@
 
     <script>
         const btn = document.getElementById('roast-btn');
-        const input = document.getElementById('artist-input'); // <--- Grab the input
+        const input = document.getElementById('artist-input');
         const container = document.getElementById('roast-container');
 
         btn.addEventListener('click', async () => {
             const artists = input.value;
             if (!artists) return alert("Please enter an artist!");
 
+            // Stop double-clicks
+            btn.disabled = true;
+            btn.innerText = "Cooking... 🍳";
+            btn.style.backgroundColor = "#555"; // Make it look disabled
+            btn.style.cursor = "not-allowed";
+
             container.style.display = 'block';
-            container.innerText = "🔥 Cooking...";
+            container.innerText = "🔥 Analyzing your bad taste...";
             
-            // --- NEW: POST REQUEST ---
-            // We are sending data TO the server now
-            const response = await fetch('/roast', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ artists: artists }) 
-            });
-            
-            const text = await response.text();
-            container.innerText = text;
+            try {
+                const response = await fetch('/roast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ artists: artists }) 
+                });
+                
+                const text = await response.text();
+                container.innerText = text;
+                
+            } catch (error) {
+                container.innerText = "Error: The kitchen caught fire.";
+            } finally {
+                // RE-ENABLE THE BUTTON
+                btn.disabled = false;
+                btn.innerText = "Roast My Taste";
+                btn.style.backgroundColor = "#1DB954"; // Restore
+                btn.style.cursor = "pointer";
+            }
         });
     </script>
 </body>
